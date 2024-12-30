@@ -1,0 +1,87 @@
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: llm_scrapy_db
+    environment:
+      POSTGRES_USER: sakif
+      POSTGRES_PASSWORD: sakif123
+      POSTGRES_DB: llm_scrapy_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - shared_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sakif"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    container_name: LLM_Django
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./llm_django:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      POSTGRES_HOST: llm_scrapy_db
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: sakif
+      POSTGRES_PASSWORD: sakif123
+      POSTGRES_DB: llm_scrapy_db
+    networks:
+      - shared_network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin_llm
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    restart: unless-stopped
+    networks:
+      - shared_network
+
+  scrapy:
+    build: .
+    container_name: scrapy_container
+    volumes:
+      - ./llm_scrapy:/app
+    working_dir: /app
+    command: tail -f /dev/null
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - shared_network
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama_llm
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./ollama:/root/.ollama
+    restart: unless-stopped
+    command: serve
+    networks:
+      - shared_network
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+
+networks:
+  shared_network:
+    driver: bridge

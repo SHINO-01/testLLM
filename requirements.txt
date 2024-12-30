@@ -1,0 +1,27 @@
+# Django and related libraries
+Django
+djangorestframework  # If using Django REST Framework
+
+# Scrapy and related libraries
+Scrapy
+scrapy-djangoitem  # For seamless integration between Scrapy and Django
+  # For handling images in Scrapy
+
+# PostgreSQL and database libraries
+psycopg2-binary
+SQLAlchemy # Used in Scrapy pipeline for database operations
+
+# Requests library for working with external APIs (e.g., Ollama)
+requests
+
+# Ollama integration (optional if specific packages are required for interaction)  # (If there’s a specific client library for Ollama)
+
+# Other helpful libraries
+python-decouple  # For environment variable management
+Pillow # For image handling
+jsonschema  # JSON validation
+
+# For testing and linting
+pytest
+flake8
+black
