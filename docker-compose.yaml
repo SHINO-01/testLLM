@@ -2,17 +2,17 @@
 services:
   postgres:
     image: postgres:latest
-    container_name: llm_scrapy_db
+    container_name: llm_db_cont
     environment:
-      POSTGRES_USER: sakif
-      POSTGRES_PASSWORD: sakif123
-      POSTGRES_DB: llm_scrapy_db
+      POSTGRES_USER: shino
+      POSTGRES_PASSWORD: shinopass123
+      POSTGRES_DB: llm_test_DB
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - shared_network
+      - llm_test
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U sakif"]
       interval: 10s
@@ -31,13 +31,13 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      POSTGRES_HOST: llm_scrapy_db
+      POSTGRES_HOST: llm_db_cont
       POSTGRES_PORT: 5432
-      POSTGRES_USER: sakif
-      POSTGRES_PASSWORD: sakif123
-      POSTGRES_DB: llm_scrapy_db
+      POSTGRES_USER: shino
+      POSTGRES_PASSWORD: shinopass123
+      POSTGRES_DB: llm_test_DB
     networks:
-      - shared_network
+      - llm_test
 
   pgadmin:
     image: dpage/pgadmin4:latest
@@ -51,7 +51,7 @@ services:
       - pgadmin_data:/var/lib/pgadmin
     restart: unless-stopped
     networks:
-      - shared_network
+      - llm_test
 
   scrapy:
     build: .
@@ -64,7 +64,7 @@ services:
       postgres:
         condition: service_healthy
     networks:
-      - shared_network
+      - llm_test
 
   ollama:
     image: ollama/ollama:latest
@@ -76,12 +76,12 @@ services:
     restart: unless-stopped
     command: serve
     networks:
-      - shared_network
+      - llm_test
 
 volumes:
   postgres_data:
   pgadmin_data:
 
 networks:
-  shared_network:
+  llm_test:
     driver: bridge

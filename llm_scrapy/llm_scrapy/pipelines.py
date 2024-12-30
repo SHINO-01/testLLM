@@ -22,7 +22,7 @@ class Hotel(Base):
 
 class HotelScrapperPipeline:
     def __init__(self):
-        DATABASE_URL = "postgresql://sakif:sakif123@postgres:5432/llm_postgres_db"
+        DATABASE_URL = "postgresql://shino:shinopass123@postgres:5432/llm_test_DB"
         self.engine = sqlalchemy.create_engine(DATABASE_URL)
         Base.metadata.create_all(self.engine)
         self.Session = sessionmaker(bind=self.engine)

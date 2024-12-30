@@ -77,10 +77,10 @@ WSGI_APPLICATION = "llm_django.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'llm_scrapy_db',
-        'USER': 'sakif',
-        'PASSWORD': 'sakif123',
-        'HOST': 'llm_scrapy_db',
+        'NAME': 'llm_test_DB',
+        'USER': 'shino',
+        'PASSWORD': 'shinopass123',
+        'HOST': 'llm_test_cont',
         'PORT': '5432',
     }
 }

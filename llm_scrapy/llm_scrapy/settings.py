@@ -47,9 +47,9 @@ RETRY_HTTP_CODES = [500, 502, 503, 504, 522, 524, 408, 429, 404]
 
 DATABASE = {
     'drivername': 'postgresql',
-    'host': 'llm_scrapy_db',
+    'host': 'llm_db_cont',
     'port': '5432',
-    'username': 'sakif',
-    'password': 'sakif123',
-    'database': 'llm_scrapy_db',
+    'username': 'shino',
+    'password': 'shinopass123',
+    'database': 'llm_test_DB',
 }
