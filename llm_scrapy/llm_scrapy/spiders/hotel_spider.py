@@ -36,6 +36,7 @@ class HotelSpider(scrapy.Spider):
 
                     yield {
                         "city": city_name,
+                        "property_ID": hotel.get("hotelId"),
                         "title": hotel.get("hotelName"),
                         "rating": hotel.get("ratingTxt"),
                         "location": hotel.get("fullAddress"),

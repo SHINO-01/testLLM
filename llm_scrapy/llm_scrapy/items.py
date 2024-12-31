@@ -2,6 +2,7 @@ import scrapy
 
 class HotelScrapperItem(scrapy.Item):
     city = scrapy.Field()
+    property_ID = scrapy.Field()
     title = scrapy.Field()
     rating = scrapy.Field()
     location = scrapy.Field()

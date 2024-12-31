@@ -9,6 +9,7 @@ Base = declarative_base()
 class Hotel(Base):
     __tablename__ = 'hotels'
     id = Column(Integer, primary_key=True, autoincrement=True)
+    property_ID = Column(String, nullable=False)
     city = Column(String, nullable=False)
     title = Column(String, nullable=False)
     rating = Column(String, nullable=True)
