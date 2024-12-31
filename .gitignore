@@ -4,3 +4,4 @@ __pycache__
 /ollama
 /media
 .env
+llm_django/run_rewrite.log

@@ -16,6 +16,7 @@ requests
 
 # Ollama integration (optional if specific packages are required for interaction)  # (If there’s a specific client library for Ollama)
 
+
 # Other helpful libraries
 python-decouple  # For environment variable management
 Pillow # For image handling
