@@ -10,19 +10,8 @@ DOWNLOAD_DELAY = 1  # Reduced delay
 
 # Configure the Images Pipeline
 ITEM_PIPELINES = {
-    'scrapy.pipelines.images.ImagesPipeline': 1,
     "llm_scrapy.pipelines.HotelScrapperPipeline": 300,
 }
-
-# Folder to store downloaded images
-IMAGES_STORE = 'media/images'
-
-# Image pipeline settings
-IMAGES_URLS_FIELD = 'image_urls'
-IMAGES_RESULT_FIELD = 'images'
-
-# Allow redirected responses for image URLs
-MEDIA_ALLOW_REDIRECTS = True
 
 # Handle HTTP error codes
 HTTPERROR_ALLOW_ALL = True

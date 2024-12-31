@@ -2,7 +2,7 @@ import sqlalchemy
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Float
-import os
+from scrapy.exceptions import DropItem
 
 Base = declarative_base()
 
@@ -15,9 +15,9 @@ class Hotel(Base):
     location = Column(String, nullable=True)
     latitude = Column(Float, nullable=True)
     longitude = Column(Float, nullable=True)
-    room_type = Column(String, nullable=True)
+    description = Column(String, nullable=True)
     price = Column(Float, nullable=True)
-    images = Column(String, nullable=True)  # Store image paths as comma-separated string
+    image_urls = Column(String, nullable=True)  # Store image URLs as a comma-separated string
     url = Column(String, nullable=False)
 
 class HotelScrapperPipeline:
@@ -30,18 +30,11 @@ class HotelScrapperPipeline:
     def process_item(self, item, spider):
         session = self.Session()
         try:
-            # If images were downloaded, convert to stored image paths
-            if 'images' in item and isinstance(item['images'], list):
-                # Assuming Scrapy's ImagesPipeline stores images in media/images/
-                # and provides paths relative to IMAGES_STORE
-                image_paths = [
-                    os.path.join('media', 'images', img['path']) 
-                    for img in item['images'] 
-                    if img.get('path')
-                ]
-                # Store image paths as comma-separated string
-                item['images'] = ','.join(image_paths) if image_paths else None
+            # Join image URLs as a single string
+            if 'image_urls' in item and isinstance(item['image_urls'], list):
+                item['image_urls'] = ','.join(item['image_urls'])
 
+            # Save data to the database
             hotel = Hotel(**item)
             session.add(hotel)
             session.commit()
@@ -49,6 +42,7 @@ class HotelScrapperPipeline:
         except Exception as e:
             spider.log(f"Error adding to database: {e}")
             session.rollback()
+            raise DropItem(f"Failed to process item: {e}")
         finally:
             session.close()
         return item

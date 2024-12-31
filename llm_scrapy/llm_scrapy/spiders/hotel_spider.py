@@ -2,7 +2,6 @@ import scrapy
 import json
 import os
 import random
-from scrapy.exceptions import CloseSpider
 from urllib.parse import urljoin
 
 class HotelSpider(scrapy.Spider):
@@ -34,7 +33,7 @@ class HotelSpider(scrapy.Spider):
                 for hotel in selected_hotels:
                     # Process image URLs
                     image_urls = self.process_image_urls(hotel)
-                    
+
                     yield {
                         "city": city_name,
                         "title": hotel.get("hotelName"),
@@ -42,10 +41,9 @@ class HotelSpider(scrapy.Spider):
                         "location": hotel.get("fullAddress"),
                         "latitude": hotel.get("lat"),
                         "longitude": hotel.get("lon"),
-                        "room_type": hotel.get("brief"),
+                        "description": hotel.get("brief"),
                         "price": self.get_price(hotel),
-                        "images": image_urls,  # List of image URLs for database
-                        "image_urls": image_urls,  # Required for ImagesPipeline
+                        "image_urls": image_urls,  # Save image URLs to the database
                         "url": hotel.get("hotelJumpUrl"),
                     }
 
@@ -66,12 +64,8 @@ class HotelSpider(scrapy.Spider):
                     with open("combined_cities.json", "w", encoding="utf-8") as f:
                         json.dump(combined_cities, f, indent=4, ensure_ascii=False)
                     self.log("Saved city data to combined_cities.json")
-
-                    # Stop the spider since the primary task is done
-                    raise CloseSpider(reason="JSON file created. Restart the spider to process data.")
                 except json.JSONDecodeError as e:
                     self.log(f"Error parsing city data JSON: {e}")
-                    raise CloseSpider(reason="Failed to create JSON file.")
 
     def get_price(self, hotel):
         price_info = hotel.get("prices", {}).get("priceInfos", [])
@@ -81,10 +75,7 @@ class HotelSpider(scrapy.Spider):
         return None
 
     def process_image_urls(self, hotel):
-        """
-        Extract and process image URLs for a hotel
-        """
-        # First, try picture list
+        # Extract and process image URLs
         picture_list = hotel.get("pictureList", [])
         if picture_list:
             return [
@@ -93,7 +84,6 @@ class HotelSpider(scrapy.Spider):
                 if pic.get("pictureUrl")
             ]
         
-        # If no picture list, try direct image URL
         hotel_img = hotel.get("imgUrl", '')
         if hotel_img:
             return [urljoin(self.base_image_url, hotel_img.lstrip('/'))]

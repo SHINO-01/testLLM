@@ -1,4 +1,3 @@
-
 services:
   postgres:
     image: postgres:latest
@@ -14,17 +13,19 @@ services:
     networks:
       - llm_test
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U sakif"]
+      test: ["CMD-SHELL", "pg_isready -U shino"]
       interval: 10s
       timeout: 5s
       retries: 5
 
   web:
-    build: .
+    build:
+      context: .
     container_name: LLM_Django
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./llm_django:/app
+      - /var/run/docker.sock:/var/run/docker.sock  # Mount Docker socket to allow docker exec
     ports:
       - "8000:8000"
     depends_on:
@@ -36,6 +37,27 @@ services:
       POSTGRES_USER: shino
       POSTGRES_PASSWORD: shinopass123
       POSTGRES_DB: llm_test_DB
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+    networks:
+      - llm_test
+
+  scrapy:
+    build: .
+    container_name: scrapy_container
+    volumes:
+      - ./llm_scrapy:/app
+    working_dir: /app
+    command: tail -f /dev/null
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      POSTGRES_HOST: llm_db_cont
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: shino
+      POSTGRES_PASSWORD: shinopass123
+      POSTGRES_DB: llm_test_DB
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
     networks:
       - llm_test
 
@@ -50,31 +72,6 @@ services:
     volumes:
       - pgadmin_data:/var/lib/pgadmin
     restart: unless-stopped
-    networks:
-      - llm_test
-
-  scrapy:
-    build: .
-    container_name: scrapy_container
-    volumes:
-      - ./llm_scrapy:/app
-    working_dir: /app
-    command: tail -f /dev/null
-    depends_on:
-      postgres:
-        condition: service_healthy
-    networks:
-      - llm_test
-
-  ollama:
-    image: ollama/ollama:latest
-    container_name: ollama_llm
-    ports:
-      - "11434:11434"
-    volumes:
-      - ./ollama:/root/.ollama
-    restart: unless-stopped
-    command: serve
     networks:
       - llm_test
 

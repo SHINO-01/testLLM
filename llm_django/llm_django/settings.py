@@ -80,7 +80,7 @@ DATABASES = {
         'NAME': 'llm_test_DB',
         'USER': 'shino',
         'PASSWORD': 'shinopass123',
-        'HOST': 'llm_test_cont',
+        'HOST': 'llm_db_cont',
         'PORT': '5432',
     }
 }
