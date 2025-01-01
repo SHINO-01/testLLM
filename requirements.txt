@@ -26,3 +26,4 @@ jsonschema  # JSON validation
 pytest
 flake8
 black
+coverage

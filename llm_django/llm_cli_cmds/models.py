@@ -1,3 +1,4 @@
+import os
 from django.db import models
 
 class Hotel(models.Model):
@@ -15,7 +16,7 @@ class Hotel(models.Model):
 
     class Meta:
         db_table = "hotels"  # Match the table name in the Scrapy database
-        managed = False  # Prevent Django from migrating this model
+        managed = os.getenv("DJANGO_TEST_MODE", "False") == "True"  # Only managed during tests
 
     def __str__(self):
         return self.title

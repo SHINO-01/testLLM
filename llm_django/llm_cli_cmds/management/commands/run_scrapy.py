@@ -1,5 +1,15 @@
 import subprocess
 from django.core.management.base import BaseCommand
+import logging
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.StreamHandler(),  # Logs to console
+    ],
+)
 
 class Command(BaseCommand):
     help = "Trigger Scrapy spider from Django"
@@ -8,9 +18,10 @@ class Command(BaseCommand):
         container_name = "scrapy_container"  # Name of the Scrapy container
         spider_name = "llm_scrapy"  # Name of the spider to run
 
+        self.stdout.write(f"Running Scrapy spider '{spider_name}' in container '{container_name}'")
+
         try:
-            # Run Scrapy in its container using docker exec
-            self.stdout.write(f"Running Scrapy spider '{spider_name}' in container '{container_name}'")
+            # Execute the Scrapy spider using `docker exec`
             result = subprocess.run(
                 ["docker", "exec", container_name, "scrapy", "crawl", spider_name],
                 check=True,
@@ -18,6 +29,13 @@ class Command(BaseCommand):
                 stderr=subprocess.PIPE,
                 text=True,
             )
+
+            # Log and print the success output
+            logging.info(f"Scrapy spider '{spider_name}' ran successfully.")
             self.stdout.write(self.style.SUCCESS(result.stdout))
+
         except subprocess.CalledProcessError as e:
-            self.stderr.write(self.style.ERROR(f"Failed to run Scrapy: {e.stderr}"))
+            # Log and print the error
+            error_message = f"Failed to run Scrapy spider '{spider_name}': {e.stderr.strip()}"
+            logging.error(error_message)
+            self.stderr.write(self.style.ERROR(error_message))

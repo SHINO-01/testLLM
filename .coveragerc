@@ -1,0 +1,12 @@
+[run]
+source = llm_cli_cmds
+include = 
+    llm_cli_cmds/*
+    llm_cli_cmds/management/commands/*
+omit =
+    */migrations/*
+    */tests.py
+    */__init__.py
+
+[report]
+show_missing = True
