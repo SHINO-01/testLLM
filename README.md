@@ -131,11 +131,11 @@ GEMINI_API_KEY=your-gemini-api-key
         <h2>How to Test</h2>
         <ol>
             <li>Run the test suite:</li>
-            <pre>docker exec -it Django_LLM python manage.py test llm_cli_cmds.tests</pre>
+            <pre><code>docker exec -it Django_LLM python manage.py test llm_cli_cmds.tests</code></pre>
             <li>Generate a coverage report:</li>
-            <pre>docker exec -it Django_LLM coverage run --rcfile=.coveragerc manage.py test llm_cli_cmds.tests</pre>
+            <pre><code>docker exec -it Django_LLM coverage run --rcfile=.coveragerc manage.py test llm_cli_cmds.tests</code></pre>
             <li>View the report:</li>
-            <pre>docker exec -it Django_LLM coverage report</pre>
+            <pre><code>docker exec -it Django_LLM coverage report</code></pre>
         </ol>
     </section>
     <section id="known-issues">
