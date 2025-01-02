@@ -1,12 +1,20 @@
 [run]
 source = llm_cli_cmds
-include = 
-    llm_cli_cmds/*
-    llm_cli_cmds/management/commands/*
 omit =
     */migrations/*
-    */tests.py
+    */tests/*
     */__init__.py
+    */apps.py
+    */admin.py
 
 [report]
-show_missing = True
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    pass
+    raise ImportError
+
+[html]
+directory = coverage_html_report
