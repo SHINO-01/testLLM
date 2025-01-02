@@ -3,7 +3,6 @@ __init__.py
 __pycache__
 /ollama
 /media
-.env
 llm_django/run_rewrite.log
 llm_django/llm_cli_cmds/migrations
 llm_django/.coverage
