@@ -16,6 +16,7 @@ class Hotel(models.Model):
 
     class Meta:
         db_table = "hotels"  # Match the table name in the Scrapy database
+        managed = False  # Tell Django not to create the table
 
     def __str__(self):
         return self.title
